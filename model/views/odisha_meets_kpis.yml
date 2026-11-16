@@ -1,0 +1,31 @@
+# Curated, consumer-facing view: the approved KPIs, one place.
+# Dashboards and (later) an AI assistant should query views, not raw cubes.
+views:
+  - name: growth_funnel
+    title: Growth funnel (signup → booking)
+    cubes:
+      - join_path: signups
+        includes:
+          - count
+          - with_booking
+          - booking_conversion_rate
+          - joined_mission_rate
+          - persona
+          - source
+          - created_at
+        prefix: true
+      - join_path: signups.bookings
+        includes:
+          - completed
+          - status
+        prefix: true
+
+  - name: content_engagement
+    title: Content engagement
+    cubes:
+      - join_path: downloads
+        includes: [count, unique_downloaders, downloads_per_person, created_at]
+        prefix: true
+      - join_path: downloads.resources
+        includes: [title, category]
+        prefix: true

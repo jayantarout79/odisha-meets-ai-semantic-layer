@@ -1,0 +1,76 @@
+# Build Club live sessions and registrations.
+cubes:
+  - name: build_club_sessions
+    sql_table: analytics.v_build_club_sessions
+    title: Build Club sessions
+
+    measures:
+      - name: count
+        title: Sessions
+        type: count
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: title
+        title: Session
+        sql: title
+        type: string
+
+      - name: status
+        title: Session status
+        sql: status
+        type: string
+
+      - name: session_date
+        sql: session_date
+        type: time
+
+  - name: build_club_registrations
+    sql_table: analytics.v_build_club_registrations
+    title: Build Club registrations
+
+    joins:
+      - name: build_club_sessions
+        relationship: many_to_one
+        sql: "{CUBE}.session_id = {build_club_sessions.id}"
+
+    measures:
+      - name: count
+        title: Registrations
+        type: count
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: role
+        sql: "COALESCE(NULLIF({CUBE}.role, ''), 'Unknown')"
+        type: string
+
+      - name: referral_source
+        title: Heard about us via
+        sql: "COALESCE(NULLIF({CUBE}.referral_source, ''), 'Not given')"
+        type: string
+
+      - name: live_build_interest
+        sql: live_build_interest
+        type: string
+
+      - name: state
+        sql: state
+        type: string
+
+      - name: country
+        sql: country
+        type: string
+
+      - name: created_at
+        title: Registration date
+        sql: created_at
+        type: time

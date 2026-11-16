@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odisha Meets AI · Growth Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">OM</div>
+    <div>
+      <h1>Odisha Meets AI</h1>
+      <p>Growth dashboard · powered by the Cube semantic layer</p>
+    </div>
+  </div>
+  <div class="meta" id="meta">Loading…</div>
+</header>
+
+<section class="filters" aria-label="Filters">
+  <div class="field">
+    <label for="preset">Date range</label>
+    <select id="preset">
+      <option value="all">All time</option>
+      <option value="30d">Last 30 days</option>
+      <option value="90d">Last 90 days</option>
+      <option value="ytd">This year</option>
+      <option value="custom">Custom…</option>
+    </select>
+  </div>
+  <div class="field custom-only">
+    <label for="from">From</label>
+    <input type="date" id="from">
+  </div>
+  <div class="field custom-only">
+    <label for="to">To</label>
+    <input type="date" id="to">
+  </div>
+  <div class="field">
+    <label for="granularity">Trend by</label>
+    <select id="granularity">
+      <option value="week">Week</option>
+      <option value="month">Month</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="persona">Signup persona</label>
+    <select id="persona"><option value="">All personas</option></select>
+  </div>
+  <div class="field">
+    <label for="category">Resource category</label>
+    <select id="category"><option value="">All categories</option></select>
+  </div>
+  <div class="field">
+    <label for="bookingSource">Booking source</label>
+    <select id="bookingSource"><option value="">All sources</option></select>
+  </div>
+  <div class="field">
+    <label for="session">Build Club session</label>
+    <select id="session"><option value="">All sessions</option></select>
+  </div>
+  <div class="actions">
+    <button id="apply" class="primary">Apply</button>
+    <button id="reset" class="ghost">Reset</button>
+  </div>
+</section>
+
+<div id="error" class="error" hidden></div>
+
+<main>
+  <section class="kpis" id="kpis"></section>
+  <section class="grid" id="charts"></section>
+</main>
+
+<footer>
+  Metrics are defined once in the Cube model (<code>model/cubes</code>) and read through the REST API.
+  Personal data never leaves Supabase: Cube reads PII-free views as a read-only role.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

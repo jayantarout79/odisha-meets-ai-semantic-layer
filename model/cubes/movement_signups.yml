@@ -1,0 +1,68 @@
+# "Join the movement" signups: top of the funnel.
+cubes:
+  - name: signups
+    sql_table: analytics.v_movement_signups
+    title: Movement signups
+
+    joins:
+      - name: bookings
+        relationship: many_to_one
+        sql: "{CUBE}.booking_id = {bookings.id}"
+
+    measures:
+      - name: count
+        title: Signups
+        type: count
+
+      - name: wants_call
+        title: Want a call
+        type: count
+        filters:
+          - sql: "{CUBE}.wants_call = true"
+
+      - name: joined_mission
+        title: Joined mission
+        type: count
+        filters:
+          - sql: "{CUBE}.joined_mission = true"
+
+      - name: with_booking
+        title: Signups with a booking
+        type: count
+        filters:
+          - sql: "{CUBE}.booking_id IS NOT NULL"
+
+      - name: joined_mission_rate
+        title: Joined mission %
+        type: number
+        sql: "ROUND(100.0 * {joined_mission} / NULLIF({count}, 0), 1)"
+
+      - name: booking_conversion_rate
+        title: Signup → booking %
+        type: number
+        sql: "ROUND(100.0 * {with_booking} / NULLIF({count}, 0), 1)"
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: persona
+        sql: "COALESCE(NULLIF({CUBE}.persona, ''), 'Unknown')"
+        type: string
+
+      - name: source
+        title: Signup source
+        sql: source
+        type: string
+
+      - name: status
+        title: Follow-up status
+        sql: status
+        type: string
+
+      - name: created_at
+        title: Signup date
+        sql: created_at
+        type: time

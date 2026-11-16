@@ -1,0 +1,39 @@
+# Downloadable resources (guides, templates, career material).
+cubes:
+  - name: resources
+    sql_table: analytics.v_resources
+    title: Resources
+
+    measures:
+      - name: count
+        title: Resources
+        type: count
+
+      - name: published
+        title: Published resources
+        type: count
+        filters:
+          - sql: "{CUBE}.published = true"
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: title
+        title: Resource
+        sql: title
+        type: string
+
+      - name: category
+        sql: "COALESCE(NULLIF(TRIM({CUBE}.category), ''), 'Uncategorized')"
+        type: string
+
+      - name: file_type
+        sql: file_type
+        type: string
+
+      - name: created_at
+        sql: created_at
+        type: time

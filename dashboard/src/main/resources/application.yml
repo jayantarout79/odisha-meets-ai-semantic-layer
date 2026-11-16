@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: oma-dashboard
+
+cube:
+  # Inside docker compose the Cube container is reachable as "cube"
+  api-url: ${CUBE_API_URL:http://localhost:4000/cubejs-api/v1}
+  # Same value as CUBEJS_API_SECRET in .env; used to sign short-lived JWTs
+  api-secret: ${CUBE_API_SECRET:}
+  timezone: America/Chicago
+  request-timeout-seconds: 30
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

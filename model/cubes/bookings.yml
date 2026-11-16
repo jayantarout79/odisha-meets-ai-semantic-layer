@@ -1,0 +1,82 @@
+# 1:1 mentoring calls booked through the site (scheduling page or Launchpad).
+cubes:
+  - name: bookings
+    sql_table: analytics.v_bookings
+    title: Bookings
+
+    joins:
+      - name: launchpad_applications
+        relationship: many_to_one
+        sql: "{CUBE}.launchpad_application_id = {launchpad_applications.id}"
+
+    measures:
+      - name: count
+        title: Bookings
+        type: count
+
+      - name: completed
+        title: Completed sessions
+        type: count
+        filters:
+          - sql: "{CUBE}.status = 'completed'"
+
+      - name: cancelled
+        title: Cancelled
+        type: count
+        filters:
+          - sql: "{CUBE}.status = 'cancelled'"
+
+      # booked_at is stored as UTC without a time zone, so compare against UTC "now".
+      - name: upcoming
+        title: Upcoming (confirmed, in the future)
+        type: count
+        filters:
+          - sql: "{CUBE}.status = 'confirmed' AND {CUBE}.booked_at >= (NOW() AT TIME ZONE 'UTC')"
+
+      # Data-quality signal: session time has passed but nobody marked it completed/cancelled.
+      - name: needs_status_update
+        title: Past sessions still 'confirmed'
+        type: count
+        filters:
+          - sql: "{CUBE}.status = 'confirmed' AND {CUBE}.booked_at < (NOW() AT TIME ZONE 'UTC')"
+
+      # Of the bookings that are resolved (completed or cancelled), how many showed up.
+      # Confirmed future sessions are excluded so the rate isn't diluted.
+      - name: show_up_rate
+        title: Show-up rate %
+        type: number
+        sql: "ROUND(100.0 * {completed} / NULLIF({completed} + {cancelled}, 0), 1)"
+
+      - name: avg_duration_minutes
+        title: Avg duration (min)
+        type: avg
+        sql: duration_minutes
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: status
+        sql: status
+        type: string
+
+      - name: source
+        title: Booking source
+        sql: source
+        type: string
+
+      - name: visitor_timezone
+        sql: visitor_timezone
+        type: string
+
+      - name: created_at
+        title: Booking created
+        sql: created_at
+        type: time
+
+      - name: booked_at
+        title: Session date
+        sql: booked_at
+        type: time

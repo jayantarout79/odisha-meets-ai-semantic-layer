@@ -1,0 +1,15 @@
+# secrets
+.env
+
+# Cube Store local data / caches
+.cubestore/
+
+# build output
+target/
+node_modules/
+
+# OS / IDE
+.DS_Store
+.idea/
+*.iml
+.vscode/

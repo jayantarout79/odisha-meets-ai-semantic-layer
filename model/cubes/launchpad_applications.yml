@@ -1,0 +1,55 @@
+# Launchpad program applications.
+cubes:
+  - name: launchpad_applications
+    sql_table: analytics.v_launchpad_applications
+    title: Launchpad applications
+
+    measures:
+      - name: count
+        title: Applications
+        type: count
+
+      - name: avg_ai_rating
+        title: Avg AI knowledge (1-5)
+        type: avg
+        sql: ai_knowledge_rating
+
+      - name: used_ai
+        title: Have used AI
+        type: count
+        filters:
+          - sql: "{CUBE}.has_used_ai = true"
+
+      - name: used_ai_rate
+        title: Have used AI %
+        type: number
+        sql: "ROUND(100.0 * {used_ai} / NULLIF({count}, 0), 1)"
+
+    dimensions:
+      - name: id
+        sql: id
+        type: string
+        primary_key: true
+
+      - name: persona
+        sql: "COALESCE(NULLIF({CUBE}.persona, ''), 'Unknown')"
+        type: string
+
+      - name: status
+        title: Application status
+        sql: status
+        type: string
+
+      - name: weekly_hours
+        title: Weekly hours available
+        sql: weekly_hours
+        type: string
+
+      - name: country
+        sql: country
+        type: string
+
+      - name: created_at
+        title: Application date
+        sql: created_at
+        type: time
